@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0, user-scalable=no">
+
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>排号</title>
+  <meta charset="utf-8" />
+  {% load staticfiles %}
+  <link rel="stylesheet" href="{% static 'wechat/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'wechat/css/template.css' %}">
+  <link rel="stylesheet" href="{% static 'wechat/css/font-awesome.min.css' %}">
+
+</head>
+
+<body>
+  {% block content %}
+  {% endblock %}
+  <script src="{% static wechat/js/jquery-3.1.1.slim.min.js %}"></script>
+  <script src="{% static wechat/js/tether.min.js %}"></script>
+  <script src="{% static wechat/js/bootstrap.min.js %}"></script>
+</body>
+</html>

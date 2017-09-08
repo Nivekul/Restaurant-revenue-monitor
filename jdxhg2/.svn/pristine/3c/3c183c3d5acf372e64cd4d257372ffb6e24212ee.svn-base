@@ -1,0 +1,76 @@
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+import xml.etree.ElementTree as ET
+
+import hashlib
+
+class Msg(object):
+    def __init__(self,
+                 toUser = None,
+                 fromUser = None,
+                 creatTime = None,
+                 msgType = None,
+                 content = None):
+
+        self.toUser = toUser
+        self.fromUser = fromUser
+        self.creatTime = creatTime
+        self.msgType = msgType
+        self.content = content
+        # self.MsgId = MsgId
+
+    def parseXML(self, msgXML):
+        msgXMLTree = ET.XML(msgXML)
+        self.toUser = msgXMLTree.find('ToUserName').text
+        self.fromUser = msgXMLTree.find('FromUserName').text
+        self.creatTime = msgXMLTree.find('CreateTime').text
+        self.msgType = msgXMLTree.find('MsgType').text
+        self.content = msgXMLTree.find('Content').text
+        # self.MsgId = msgXMLTree.find('MsgId').text
+
+@csrf_exempt
+def index(request):
+    if request.method == 'GET':
+        data        = request.GET
+        echostr     = data.get('echostr', None)
+
+        if echostr:
+            if CheckSignature(data):
+                return HttpResponse(echostr, content_type="text/plain")
+        else:
+            return HttpResponse('Forbbiden', content_type="text/plain")
+
+
+    else:
+        msgXML = request.body
+        receivedMsg = Msg().parseXML(msgXML)
+        responseMsg = receivedMsg
+        _ = receivedMsg.ToUserName
+        responseMsg.FromUserName = _
+        responseMsg.ToUserName = receivedMsg.FromUserName
+        responseMsg.CreatTime += 1
+
+        return render(request,
+                      'wechat/textResponse.xml',
+                      {'responseMsg': responseMsg},
+                      content_type='text/xml')
+
+        # return HttpResponse(request.body.decode('utf-8'), content_type="text/plain")
+        # return HttpResponse('msgXML.items()')
+
+
+    return HttpResponse(type(echostr) is str)
+
+def CheckSignature(data):
+    signature   = data.get('signature', None)
+    timestamp   = data.get('timestamp', None)
+    nonce       = data.get('nonce', None)
+    token       = 'ixjW7dSjnQq8UbZF8xjavn1J3XjfOOg'
+
+    tmpArr = [token, timestamp, nonce]
+    tmpArr.sort()
+    tmpStr = ''.join([str(i) for i in tmpArr])
+    tmpStr = hashlib.sha1(tmpStr).hexdigest()
+
+    return tmpStr == signature

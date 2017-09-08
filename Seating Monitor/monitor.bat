@@ -1,0 +1,1 @@
+start C:\python27\pythonw.exe C:\Users\zjghgpos-1\monitor.py'

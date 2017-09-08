@@ -1,0 +1,6 @@
+managers = [
+    ''
+]
+
+def check(user):
+    return user in managers

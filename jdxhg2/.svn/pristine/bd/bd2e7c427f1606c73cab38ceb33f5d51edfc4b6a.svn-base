@@ -1,0 +1,6 @@
+from django.shortcuts import render
+from django.http import HttpResponse
+
+def index(request):
+    r = request.GET.get('r', None)
+    return HttpResponse('<h1>'+r+'</h1>')

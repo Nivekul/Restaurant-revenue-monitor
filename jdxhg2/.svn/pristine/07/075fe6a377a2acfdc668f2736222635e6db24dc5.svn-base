@@ -1,0 +1,29 @@
+body {
+  background-color: pink;
+}
+
+label {
+  margin: auto 10px auto 0;
+}
+
+input[type='text'] {
+  appearance: none;
+  box-shadow: none;
+  border-radius: 0px;
+  border: none;
+  border-bottom: 1px solid black;
+  outline: none;
+  background-color: rgba(0,0,0,0);
+}
+
+input:focus {
+  outline: none;
+}
+
+.form_row {
+  margin: 0 auto 20px auto;
+}
+
+input[type="submit"] {
+  margin: 0 auto;
+}

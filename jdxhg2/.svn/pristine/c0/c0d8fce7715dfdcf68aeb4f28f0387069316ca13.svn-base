@@ -1,0 +1,42 @@
+{% extends "wechat/header.html" %}
+
+{% block content %}
+<div class="wrapper">
+  <form action="/wechat/lineup/queue">
+    <div class="container">
+      <div class="row">
+        <div class="col form_label">
+          <label for="count">用餐人数:</label>
+        </div>
+        <div class="w-100"></div>
+        <div class="col form_input">
+          <input id="count" type="number" name="number">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col form_label">
+          <label for="name">姓名:</label>
+        </div>
+        <div class="w-100"></div>
+        <div class="col form_input">
+          <input id="name" type="text" name="NAME" value="{{ userID }}">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col form_label">
+          <label for="cellphone">联系电话:</label>
+        </div>
+        <div class="w-100"></div>
+        <div class="col form_input">
+          <input id="cellphone" type="tel" name="tel">
+        </div>
+      </div>
+      <div class="row form_submit">
+        <div class="form_row">
+          <input type="submit" value="取号">
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

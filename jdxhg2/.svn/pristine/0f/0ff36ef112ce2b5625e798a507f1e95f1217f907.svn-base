@@ -1,0 +1,49 @@
+from django.shortcuts import render
+from django.http import HttpResponse, Http404
+from django.views.decorators.csrf import csrf_exempt
+import xml.etree.ElementTree as ET
+import time
+import hashlib
+from msg import *
+
+@csrf_exempt
+def index(request):
+    if request.method == 'GET':
+        data        = request.GET
+        echostr     = data.get('echostr', None)
+
+        if echostr:
+            if checkSignature(data):
+                return HttpResponse(echostr, content_type="text/plain")
+        else:
+            raise Http404
+
+
+    else:
+        msgXML = request.body
+
+        receivedMsg = parseMsg(msgXML)
+        responseMsg = receivedMsg.reply()
+
+        return render(request,
+                      'wechat/textResponse.xml',
+                      {'responseMsg': responseMsg},
+                      content_type='text/xml')
+
+    return HttpResponse(type(echostr) is str)
+
+def checkSignature(data):
+    signature   = data.get('signature', None)
+    timestamp   = data.get('timestamp', None)
+    nonce       = data.get('nonce', None)
+    token       = 'ixjW7dSjnQq8UbZF8xjavn1J3XjfOOg'
+
+    tmpArr = [token, timestamp, nonce]
+    tmpArr.sort()
+    tmpStr = ''.join([str(i) for i in tmpArr])
+    tmpStr = hashlib.sha1(tmpStr).hexdigest()
+
+    return tmpStr == signature
+
+def auth(request):
+    pass

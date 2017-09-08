@@ -1,0 +1,12 @@
+{% extends "wechat/header.html" %}
+
+{% block content %}
+<form action="/wechat/lineup/queue">
+  <label for="name">姓名:</label>
+  <input id="name" type="text" name="NAME" value="{{ userID }}">
+  <label for="count">人数:</label>
+  <input id="count" type="text" name="COUNT">
+  <label for="cellphone">电话:</label>
+  <input id="cellphone" type="text" name="CELLPHONE">
+  <input type="submit" value="取号">
+{% endblock %}

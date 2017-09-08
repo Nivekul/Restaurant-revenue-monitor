@@ -1,0 +1,6 @@
+managers = [
+    'oz_szwMazVZ9bMN4sjLADFDZRssE'
+]
+
+def check(user):
+    return user in managers

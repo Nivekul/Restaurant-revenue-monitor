@@ -1,0 +1,65 @@
+from django.shortcuts import render
+from django.http import HttpResponse
+import xml.etree.ElementTree as ET
+import hashlib
+
+class Msg(object):
+    def __init__(self,
+                 toUser = None,
+                 fromUser = None,
+                 creatTime = None,
+                 msgType = None,
+                 content = None):
+
+        self.toUser = toUser
+        self.fromUser = fromUser
+        self.creatTime = creatTime
+        self.msgType = msgType
+        self.content = content
+        # self.MsgId = MsgId
+
+    def parseXML(msgXML):
+        self.toUser = msgXML.find('ToUserName').text
+        self.fromUser = msgXML.find('FromUserName').text
+        self.creatTime = msgXML.find('CreatTime').text
+        self.msgType = msgXML.find('MsgType').text
+        self.content = msgXML.find('Content').text
+        # self.MsgId = msgXML.find('MsgId').text
+
+def index(request):
+    data        = request.GET
+    echostr     = data.get('echostr', None)
+
+    if echostr:
+        if CheckSignature(data):
+            return HttpResponse(echostr, content_type="text/plain")
+
+    else:
+        msgXML = request.POST
+        receivedMsg = Msg().parseXML(msgXML)
+        responseMsg = receivedMsg
+        _ = receivedMsg.ToUserName
+        responseMsg.FromUserName = _
+        responseMsg.ToUserName = receivedMsg.FromUserName
+        responseMsg.CreatTime += 1
+
+        return render(request,
+                      'wechat/textResponse.xml',
+                      {'responseMsg': responseMsg},
+                      content_type='text/xml')
+
+
+    return HttpResponse(type(echostr) is str)
+
+def CheckSignature(data):
+    signature   = data.get('signature', None)
+    timestamp   = data.get('timestamp', None)
+    nonce       = data.get('nonce', None)
+    token       = 'ixjW7dSjnQq8UbZF8xjavn1J3XjfOOg'
+
+    tmpArr = [token, timestamp, nonce]
+    tmpArr.sort()
+    tmpStr = ''.join([str(i) for i in tmpArr])
+    tmpStr = hashlib.sha1(tmpStr).hexdigest()
+
+    return tmpStr == signature

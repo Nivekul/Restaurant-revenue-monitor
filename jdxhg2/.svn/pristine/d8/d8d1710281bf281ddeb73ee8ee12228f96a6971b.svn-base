@@ -1,0 +1,87 @@
+from abc import ABCMeta, abstractmethod
+import xml.etree.ElementTree as ET
+import time
+
+class Msg:
+    def __init__(self, toUser, fromUser, createTime):
+        self.toUser = toUser
+        self.fromUser = fromUser
+        self.createTime = createTime
+
+    @abstractmethod
+    def parseXML(self, msgXMLTree):
+        pass
+
+    @abstractmethod
+    def reply(self):
+        pass
+
+class TextMsg(Msg):
+
+    msgType = 'text'
+
+    def __init__(self, toUser = None, fromUser = None, createTime = None, content = None):
+        Msg.__init__(self, toUser, fromUser, createTime)
+        self.content = content
+
+    def parseXML(self, msgXMLTree):
+        toUser = msgXMLTree.find('ToUserName').text
+        fromUser = msgXMLTree.find('FromUserName').text
+        createTime = msgXMLTree.find('CreateTime').text
+        content = msgXMLTree.find('Content').text
+        self.__init__(toUser, fromUser, createTime, content)
+
+        return self
+
+    def reply(self):
+        responseMsg = TextMsg(self.fromUser, self.toUser, int(time.time()), self.content)
+
+        return responseMsg
+
+class Event(Msg):
+    msgType = 'event'
+
+    def parseXML(msgXMLTree):
+
+        types = {
+            'CLICK': ClickEvent
+        }
+
+        event = types.get(msgXMLTree.find('Event').text)
+
+        return event.parseXML(msgXMLTree)
+
+class ClickEvent(Event):
+
+    event = 'CLICK'
+
+    def __init__(self, toUser = None, fromUser = None, createTime = None, eventKey = None):
+        Event.__init__(self, toUser, fromUser, createTime)
+        self.eventKey = eventKey
+
+    def parseXML(self, msgXMLTree):
+        toUser = msgXMLTree.find('ToUserName').text
+        fromUser = msgXMLTree.find('FromUserName').text
+        createTime = msgXMLTree.find('CreateTime').text
+        eventKey = msgXMLTree.find('EventKey').text
+        self.__init__(toUser, fromUser, createTime, eventKey)
+
+        return self
+
+    def reply(self):
+        responseMsg = TextMsg(self.fromUser, self.toUser, int(time.time()), 'clicked')
+
+        return responseMsg
+
+def parseMsg(msgXML):
+    msgXMLTree = ET.XML(msgXML)
+    msgType = msgXMLTree.find('MsgType').text
+
+    types = {
+        'text': TextMsg
+        'event': EventMsg
+    }
+
+    msg = types.get(msgType)
+
+    return msg.parseXML(msgXMLTree)

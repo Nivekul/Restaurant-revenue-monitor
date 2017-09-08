@@ -1,0 +1,28 @@
+from django.shortcuts import render
+from django.http import HttpResponse
+import hashlib
+
+
+def index(request):
+    data        = request.GET
+    signature   = data.get('signature', None)
+    timestamp   = data.get('timestamp', None)
+    nonce       = data.get('nonce', None)
+    echostr     = data.get('echostr', None)
+    token       = 'jdxhg'
+
+    if echostr and signature and timestamp and nonce:
+        tmpArr = [token, timestamp, nonce]
+        tmpArr.sort()
+        tmpStr = ''.join(tmpArr)
+        tmpStr = hashlib.sha1(tmpStr).hexdigest()
+
+        if tmpStr == signature:
+            return HttpResponse(echostr)
+        else:
+            return HttpResponse('<h1>Wrong</h1><h3>signature: '+signature+' tmpStr: '+tmpStr+'</h3>')
+
+    else:
+        pass
+
+    return HttpResponse('<h1>Hello</h1>')

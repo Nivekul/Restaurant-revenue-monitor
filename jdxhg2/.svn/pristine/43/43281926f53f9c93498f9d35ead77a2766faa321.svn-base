@@ -1,0 +1,54 @@
+# -*- coding: utf-8 -*-
+from django.http import HttpResponse
+import urllib
+import urllib2
+import json
+
+accessTokenUrl = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxb1424a0a2eb49689&secret=f5745f2b9724446361e8947034f12ac2'
+createMenuUrl = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='
+getMenuUrl = 'https://api.weixin.qq.com/cgi-bin/menu/get?access_token='
+
+def getAccessToken():
+    request = urllib2.Request(accessTokenUrl)
+    response = urllib2.urlopen(request)
+    accessToken = json.loads(response.read())['access_token']
+    return accessToken
+
+def create(request):
+    menu = '''
+             {
+             "button":[
+             {
+                  "type":"click",
+                  "name":"菜单",
+                  "key":"V1001_TODAY_MUSIC"
+              },
+              {
+                   "name":"menu2",
+                   "sub_button":[
+                   {
+                       "type":"view",
+                       "name":"sub1",
+                       "url":"http://www.soso.com/"
+                    },
+                    {
+                       "type":"view",
+                       "name":"sub2",
+                       "url":"http://v.qq.com/"
+                    },
+                    {
+                       "type":"click",
+                       "name":"sub3",
+                       "key":"V1001_GOOD"
+                    }]
+               }]
+         }
+         '''
+    response = urllib2.urlopen(createMenuUrl + getAccessToken(), menu)
+    return HttpResponse(response.read())
+
+def get(request):
+    response = urllib2.urlopen(getMenuUrl + getAccessToken())
+    menu = json.loads(response.read())
+    prettyMenu = json.dumps(menu, indent = 3)
+    return HttpResponse(prettyMenu)

@@ -1,0 +1,33 @@
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.core import serializers
+import hashlib
+
+
+def index(request):
+    data        = request.GET
+    echostr     = data.get('echostr', None)
+
+    if echostr:
+        if CheckSignature(data):
+            return HttpResponse(echostr, content_type="text/plain")
+
+    else:
+        post = request.POST
+        postObj = serializers.deserialize('xml', data)
+        
+
+    return HttpResponse(type(echostr) is str)
+
+def CheckSignature(data):
+    signature   = data.get('signature', None)
+    timestamp   = data.get('timestamp', None)
+    nonce       = data.get('nonce', None)
+    token       = 'ixjW7dSjnQq8UbZF8xjavn1J3XjfOOg'
+
+    tmpArr = [token, timestamp, nonce]
+    tmpArr.sort()
+    tmpStr = ''.join([str(i) for i in tmpArr])
+    tmpStr = hashlib.sha1(tmpStr).hexdigest()
+
+    return tmpStr == signature

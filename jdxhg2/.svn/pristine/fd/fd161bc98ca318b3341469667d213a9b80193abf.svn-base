@@ -1,0 +1,50 @@
+import xml.etree.ElementTree as ET
+import time
+
+class Msg(object):
+    def __init__(self, toUser, fromUser, createTime):
+        self.toUser = toUser
+        self.fromUser = fromUser
+        self.createTime = createTime
+
+
+class TextMsg(Msg):
+
+    msgType = 'text'
+
+    def __init__(self, toUser = None, fromUser = None, createTime = None, content = None):
+        Msg.__init__(toUser, fromUser, createTime)
+        self.content = content
+
+    def parseXML(self, msgXMLTree):
+        toUser = msgXMLTree.find('ToUserName').text
+        fromUser = msgXMLTree.find('FromUserName').text
+        createTime = msgXMLTree.find('CreateTime').text
+        content = msgXMLTree.find('Content').text
+        self.__init__(toUser, fromUser, createTime, content)
+
+        return self
+
+    def reply(self):
+        responseMsg = TextMsg(self.fromUser, self.toUser, int(time.time()), self.content)
+
+        return responseMsg
+
+    def __setattr__(self, name, value):
+        if hasattr(self, name):
+            object.__setattr__(self, name, value)
+        else:
+            raise AttributeError("AttributeError: '%s' object has no attribute '%r'"
+                                 % (self.__class__.__name__, name))
+
+def parseMsg(msgXML):
+    msgXMLTree = ET.XML(msgXML)
+    msgType = msgXMLTree.find('MsgType').text
+
+    types = {
+        'text': TextMsg
+    }
+
+    msg = types.get(msgType)
+
+    return msg()

@@ -1,0 +1,13 @@
+<html>
+<head>
+  <title>排号</title>
+  <meta charset="utf-8" />
+  {% load staticfiles %}
+  <link rel="stylesheet" href="{% static 'wechat/css/bootstrap.min.css' %}">
+</head>
+<body>
+  {% block content%}
+  {% endblock %}
+  </form>
+</body>
+</html>

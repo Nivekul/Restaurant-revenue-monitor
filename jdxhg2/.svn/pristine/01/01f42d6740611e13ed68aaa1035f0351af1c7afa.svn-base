@@ -1,0 +1,11 @@
+from django.conf.urls import include, url
+from . import views
+from . import menu
+
+urlpatterns = [
+    url(r'^$', views.index),
+    url(r'^MP_verify_TolmmqaRQQYV54az.txt$', views.auth),
+    url(r'^lineup$', views.lineup),
+    url(r'^queue$', views.queue),
+    url(r'^uploadSeating$', views.updateSeating),
+]

@@ -1,0 +1,61 @@
+{% extends "wechat/header.html" %}
+
+{% block content %}
+<div class="wrapper">
+  <div class="wrapper-header">
+    <div class="form-group form-header">
+      <h4 class="form-location">暨阳湖商业街店</h4>
+    </div>
+  </div>
+  <form action="lineup/queue" method="POST">
+    {% csrf_token %}
+    <div class="wrapper-form">
+        <div class="form-group">
+          <div class="input-group">
+            <div class="input-group-addon">
+              <span><i class="fa fa-cutlery"></i></span>
+            </div>
+            <select class="form-control select-disabled" name="count">
+              <option disabled selected>用餐人数</option>
+              {% for option in form.count.field.choices %}
+              <option value="{{ option }}">{{ option }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class=" row">
+          <div class="form-group col-xs-6 form-name">
+            <div class="input-group">
+              <div class="input-group-addon">
+                <span><i class="fa fa-user"></i></span>
+              </div>
+              {{ form.name }}
+            </div>
+          </div>
+          <div class="form-group col-xs-6 radio">
+            <div class="form-gender">
+              <label class="radio-inline">
+                <input type="radio" name="gender" id='optionMale' value='m'>先生
+              </label>
+              <label class="radio-inline">
+                <input type="radio" name="gender" id='optionFemale' value='f'>女士
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="input-group">
+            <div class="input-group-addon">
+              <span><i class="fa fa-phone"></i></span>
+            </div>
+            <input class="form-control" id="cellphone" type="tel" name="phone" placeholder="联系电话" value="{{ phone|default_if_none:'' }}">
+          </div>
+        </div>
+    </div>
+    <div class="wrapper-submit">
+      <button class="btn btn-primary btn-lg btn-block" type="submit">取号</button>
+    </div>
+  </form>
+  </div>
+{% endblock %}

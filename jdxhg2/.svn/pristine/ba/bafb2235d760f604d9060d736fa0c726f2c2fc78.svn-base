@@ -1,0 +1,56 @@
+{% extends "wechat/header.html" %}
+
+{% block content %}
+<div class="wrapper">
+  <div class="wrapper-header">
+    <div class="form-group form-header">
+      <h4 class="form-location">暨阳湖商业街店</h4>
+    </div>
+  </div>
+  <div class="wrapper-form">
+    <form action="/wechat/lineup/queue">
+      <div class="form-group">
+        <div class="input-group">
+          <div class="input-group-addon">
+            <span><i class="fa fa-cutlery"></i></span>
+          </div>
+          <select class="form-control select-disabled">
+            <option disabled selected>用餐人数</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+            <option>7</option>
+            <option>8</option>
+            <option>9</option>
+            <option>10</option>
+            <option>11</option>
+            <option>12</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="input-group">
+          <div class="input-group-addon">
+            <span><i class="fa fa-user"></i></span>
+          </div>
+          <input class="form-control" id="name" type="text" name="name" placeholder="姓名" value='{{ name }}'>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="input-group">
+          <div class="input-group-addon">
+            <span><i class="fa fa-phone"></i></span>
+          </div>
+          <input class="form-control" id="cellphone" type="tel" name="tel" placeholder="联系电话">
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="wrapper-submit">
+    <button class="btn btn-primary btn-lg btn-block submit" type="submit">取号</button>
+  </div>
+</div>
+{% endblock %}
